@@ -5,22 +5,24 @@
 using namespace std;
 
 extern "C" {
-    int isOver(vector<int> board, int pre) {
-        if (pre == 1) {
-            for (int i = 0; i < 6; i++) {
-                if (board[i] != 0) {
-                    return 0;
-                }
+    int isOver(vector<int> board) {
+        int flag = 1;
+        for (int i = 0; i < 6; i++) {
+            if (board[i] != 0) {
+                flag = 0;
+                break;
             }
-            return 1;
-        } else {
-            for (int i = 7; i < 13; i++) {
-                if (board[i] != 0) {
-                    return 0;   
-                }    
-            }
+        }
+        if (flag == 1) {
             return 1;
         }
+        for (int i = 7; i < 13; i++) {
+            if (board[i] != 0) {
+                flag = 0;
+                break;
+            }
+        }
+        return flag;
     }   
 
     int mancalaResult(int flag, int *seq, int size) {
@@ -67,19 +69,19 @@ extern "C" {
                     board[p2_score] += n + 1;
                 }
             }
+            // 判断是否结束
+            if (isOver(board) && i != size - 1) {
+                return 30000 + i + 1;
+            }
             // 确定下一步先手
             if ((pre == 1 && pos == p1_score) || (pre == 2 && pos != p2_score)) {
                 pre = 1;
             } else {
                 pre = 2;
             }
-            // 判断是否结束
-            if (isOver(board, pre) && i != size - 1) {
-            return 30000 + i + 1;
-            }
         }
         // 判断是否结束
-        if (isOver(board, pre)) {
+        if (isOver(board)) {
             for (int i = 0; i < 6; i++) {
                 board[p1_score] += board[i];
             }
