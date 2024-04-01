@@ -1,4 +1,5 @@
 #include<vector>
+#include "mancalaResult.h"
 #define p1_score  6
 #define p2_score 13
 using namespace std;
