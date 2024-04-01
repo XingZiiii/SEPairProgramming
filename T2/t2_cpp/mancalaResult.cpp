@@ -21,7 +21,7 @@ extern "C" {
             return 1;
         }
     }   
-    
+
     int mancalaResult(int flag, int *seq, int size) {
         int pre = flag;
         vector<int> board(14, 4);
@@ -33,7 +33,10 @@ extern "C" {
             if (pre != cur / 10) {
                 return 30000 + i;
             }
-            int pos = cur % 10;
+            int pos = cur % 10 - 1;
+            if (cur / 10 == 2) {
+                pos += 7;
+            }
             // 判断取的位置是否为空
             if (board[pos] == 0) {
                 return 30000 + i;
@@ -76,6 +79,12 @@ extern "C" {
         }
         // 判断是否结束
         if (isOver(board, pre)) {
+            for (int i = 0; i < 6; i++) {
+                board[p1_score] += board[i];
+            }
+            for (int i = 7; i < 13; i++) {
+                board[p2_score] += board[i];
+            }
             int res = (flag == 1) ? (board[p1_score] - board[p2_score]) : (board[p2_score] - board[p1_score]);
             return 15000 + res;
         } else {

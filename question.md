@@ -134,13 +134,13 @@ function bocchiShutUp(flag, array, size) {
 | **PLANNING**                      | **计划**                                 | 5 |  |
 | - Estimate                              | - 估计这个任务需要多少时间               | 5 |  |
 | **DEVELOPMENT**           | **开发**                                 | 135 |  |
-| - Analysis & Design Spec                | - 需求分析 & 生成设计规格（确定要实现什么） | 10 |  |
-| - Technical Background       | - 了解技术背景（包括学习新技术） | 5 |  |
-| - Coding Standard                       | - 代码规范 | 5 |  |
-| - Design                               | - 具体设计（确定怎么实现）                   | 5 |  |
-| - Coding                                | - 具体编码                        | 60 |  |
-| - Code Review                           | - 代码复审                               | 15 |  |
-| - Test Design                           | - 测试设计（确定怎么测，比如要测试哪些情景、设计哪些种类的测试用例） | 5 |  |
+| - Analysis & Design Spec                | - 需求分析 & 生成设计规格（确定要实现什么） | 10 | 5 |
+| - Technical Background       | - 了解技术背景（包括学习新技术） | 5 | 5 |
+| - Coding Standard                       | - 代码规范 | 5 | 5 |
+| - Design                               | - 具体设计（确定怎么实现）                   | 5 | 5 |
+| - Coding                                | - 具体编码                        | 60 | 30 |
+| - Code Review                           | - 代码复审                               | 15 | 5 |
+| - Test Design                           | - 测试设计（确定怎么测，比如要测试哪些情景、设计哪些种类的测试用例） | 5 | 5 |
 | - Test Implement | - 测试实现（设计/生成具体的测试用例、编码实现测试） | 30               | |
 | **REPORTING**                  | **报告**                                 | 30 |  |
 | - Quality Report                   | - 质量报告（评估设计、实现、测试的有效性） | 15 |  |
