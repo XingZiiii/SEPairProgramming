@@ -35,13 +35,17 @@ I. 没有听说过；
 
 ###### **→ 📖 Q1.5(P) 请在完成任务的同时记录，并在完成任务后整理完善：**
 
-> 完成编程任务期间，你和你的搭档依次做了什么，比如：
->
-> 1. 查阅了什么资料；
->2. 如何进行了开发；
-> 3. 遇到了什么问题，又通过什么方式解决。
+我们使用的编程语言是c++，c++的wasm需要使用emscripten库导出js和wasm文件，然后从js中导出函数，与测试文件交互。
 
+第一个难题是从js文件中导出函数。
 
+c++的函数不能在简单的编译后，通过 import 语句导入。经过我们的调研，最后得到的解决方案是，在命令行中声明要导出的函数，并表明导出的形式。然后在js文件中通过 Module 方法的 cwrap 函数对c++函数重新封装，重新声明函数，设置函数的参数列表和返回值，才能完成调用。
+
+第二个难题是js文件中如何调用c++函数，输入预定的数组数据。
+
+c++函数的参数是一个整数指针，但是在js文件中无法直接将数组传输进去。在我们的方案中，需要为数组先在栈上分配空间，将数组复制到栈上，然后将栈的指针作为参数传递给函数。也就是说，对于涉及数组操作的函数，需要在js文件中自主进行内存管理。
+
+我们解决问题的过程中参考了很多博客、官网教程，也咨询了很多其他同学的解决方案。模块一的主要难点就在于 c++ 和 js 的交互上，是我们花了最多时间的部分。
 
 #### 编程语言选择
 
@@ -51,16 +55,15 @@ I. 没有听说过；
 
 因为相比于其他语言，我们对c++比较熟悉。且c++对wasm的支持相对完善。
 
-
 ###### **→ 📖 Q1.6.X.2(P) 为了完成相关编程任务，进行了哪些操作、使用了怎样的工具链？简要描述相关工具做了什么。**
+
+在 c++ 的 web asembly 转换中，我们使用了 emsdk 库导出对应的 js 和 wasm 文件，然后从js中导出函数，与测试文件交互。
 
 首先，下载 emsdk 库，配置并加载emcc环境。
 
 参考博客：https://blog.csdn.net/GISuuser/article/details/118310452?spm=1001.2014.3001.5501
 
-emcc
-
-然后，我们参考官网指引，使用emcc指令编译c++文件，生成js和wasm。
+然后，我们参考官网指引，使用**emcc指令**编译c++文件，生成js和wasm。
 
 我们查找了 `emcc 官网 > porting > 连接c++和js > 代码交互 > [使用ccall/wrap](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-ccall-cwrap)`，并参考gpt，发现以下操作可行：
 
@@ -69,13 +72,13 @@ emcc
 命令行输入：
 `emcc bocchiShutUp.cpp -o function.js -s EXPORTED_FUNCTIONS="['_bocchiShutUp', '_malloc', '_free']" -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s EXPORT_ES6=1`
 
--o 输出文件名
+`-o` 标识编译输出的文件名
 
--sEXPORTED_FUNCTIONS= c++函数
+`-sEXPORTED_FUNCTIONS` 标注出需要导出的c++函数
 
--sEXPORTED_RUNTIME_METHODS=ccall, cwrap
+`-sEXPORTED_RUNTIME_METHODS=ccall, cwrap` 这里的ccall和cwrap是之后与 test.js 交互时需要用到的函数
 
--EXPORT_ES6 为了导出 module
+`-EXPORT_ES6` 为了能够从js文件中顺利导出 module 添加的必要参数
 
 然后修改test.js文件内容，导入相应函数：
 
@@ -104,7 +107,6 @@ function bocchiShutUp(flag, array, size) {
 }
 ```
 
-
 #### 总结
 
 ###### **→ 📖 Q1.7(P) 请记录下目前的时间。**
@@ -127,8 +129,6 @@ function bocchiShutUp(flag, array, size) {
 
 ###### **→ 📖 Q2.2(P) 请在完成任务的同时记录，并在完成任务后整理完善：**
 
-> 1. 浏览任务要求，参照 **附录A：基于 PSP 2.1 修改的 PSP 表格**，估计任务预计耗时；
-
 | Personal Software Process Stages   | 个人软件开发流程 | 预估耗时（分钟）                         | 实际耗时（分钟） |
 | :-------------------------------------- | :--------------------------------------- | :--------------- | :--------- |
 | **PLANNING**                      | **计划**                                 | 5 | 5 |
@@ -147,9 +147,8 @@ function bocchiShutUp(flag, array, size) {
 | - Size Measurement                      | - 计算工作量                             | 5 | 5 |
 | - Postmortem & Process Improvement Plan | - 事后总结和过程改进计划（总结过程中的问题和改进点） | 10 | 10 |
 | **TOTAL** | **合计**                                 | 170 | 215 |
->2. 完成编程任务期间，依次做了什么（比如查阅了什么资料，随后如何进行了开发，遇到了什么问题，又通过什么方式解决）；
 
-
+我们的编程进行的很顺利。在测试阶段，对于可能出现的异常行为，枚举可能产生的错误，并自行捏造数据。但是对于如何测试程序的正确性，我们罗列了一些解决方法，最后还是决定通过编写一个随机数据生成器，通过两个程序的相互对拍验证正确性。我们使用python语言，以相同的游戏逻辑复现了游戏步骤，通过生成随机数模拟出游戏行为，作为正常情况的输出。在 c++ 测试中，读取 python 生成的数据，并调用c++函数，验证两个程序的输出是否一致。我们对10000条游戏步骤数据进行了测试，保证了程序的正确性。因此，我们的测试阶段比预计多花了很多时间，相当于又实现了一遍游戏逻辑，还在原有的基础上开发debug模式，工作量比预期大很多。
 
 #### 测试
 
