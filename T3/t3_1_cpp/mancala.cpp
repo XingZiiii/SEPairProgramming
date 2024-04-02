@@ -1,6 +1,8 @@
 #include<vector>
+
 #define p1_score  6
 #define p2_score 13
+
 using namespace std;
 
 extern "C" {
@@ -15,6 +17,7 @@ extern "C" {
         if (flag == 1) {
             return 1;
         }
+        flag = 1;
         for (int i = 7; i < 13; i++) {
             if (board[i] != 0) {
                 flag = 0;
@@ -60,7 +63,7 @@ extern "C" {
                 num--;
             }
             // 判断是否取子
-            if ((pre == 1 && (pos >= 0 && pos <= 5) && board[pos] == 1) || (pre == 2 && (pos >= 7 && pos <= 12) && board[pos] == 1)) {
+            if ((pre == 1 && (pos >= 0 && pos <= 5) && board[pos] == 1 && board[12-pos] != 0) || (pre == 2 && (pos >= 7 && pos <= 12) && board[pos] == 1 && board[12-pos] != 0)) {
                 board[pos] = 0;
                 int take = 12 - pos;
                 int n = board[take];
@@ -90,7 +93,7 @@ extern "C" {
         int data;
         // 判断是否违规
         if (violate){
-            int data = 200;
+            data = 200;
             if (violate == 1) {
                 data += 2*board[p1_score] - 48;
             } else {
