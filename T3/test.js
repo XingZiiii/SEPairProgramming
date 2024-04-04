@@ -3,65 +3,17 @@ import assert from "assert";
 // Choose proper "import" depending on your PL.
 // import { mancalaOperator as op1 } from "./t3-2-as/build/release.js";
 // import { mancala_operator as op1 } from "./t3_2_rust/pkg/t3_2_rust.js"
-// [Write your own "import" for other PLs.]
+import { mancalaOperator as op1 } from "./t3_2_cpp/bridge.js";
 
 // Choose proper "import" depending on your PL.
 // import { mancalaOperator as op2 } from "./t3-2-as-rival/build/release.js";
 // import { mancala_operator as op2 } from "./t3_2_rust_rival/pkg/t3_2_rust.js"
-// [Write your own "import" for other PLs.]
+import { mancalaOperator as op2 } from "./t3_2_cpp/bridge.js";
 
 // Choose proper "import" depending on your PL.
 // import { mancalaBoard as board } from "./t3-1-as/build/release.js";
 // import { mancala_board as board } from "./t3_1_rust/pkg/t3_1_rust.js"
-// [Write your own "import" for other PLs.]
-
-import Module_1 from "./t3_1_cpp/function.js";
-import Module_2 from "./t3_2_cpp/function.js";
-
-var RealModule_1 = await Module_1()
-var RealModule_2 = await Module_2()
-
-var callMancalaBoard = RealModule_1.cwrap("mancalaBoard", "number", ["number", "number", "number"]);
-var callOp1 = RealModule_2.cwrap("mancalaOperator", "number", ["number", "number"]);
-var callOp2 = RealModule_2.cwrap("mancalaOperator", "number", ["number", "number"]);
-
-function board(flag, seq, size) {
-    const bytesPerElement = Int32Array.BYTES_PER_ELEMENT;
-    const numBytes = size * bytesPerElement;
-    const ptr = RealModule_1._malloc(numBytes);
-    
-    let heapView = new Int32Array(RealModule_1.HEAP32.buffer, ptr, size);
-    heapView.set(seq);
-    
-    const result = callMancalaBoard(flag, ptr, size);
-    const len = 15;
-    const resultArray = RealModule_1.HEAP32.subarray(result / 4, result / 4 + len);
-    return resultArray;
-}
-
-function op1(flag, status) {
-    const bytesPerElement = Int32Array.BYTES_PER_ELEMENT;
-    const numBytes = 14 * bytesPerElement;
-    const ptr = RealModule_2._malloc(numBytes);
-    
-    let heapView = new Int32Array(RealModule_2.HEAP32.buffer, ptr, 14);
-    heapView.set(status);
-    
-    const result = callOp1(flag, ptr);
-    return result;
-}
-
-function op2(flag, status) {
-    const bytesPerElement = Int32Array.BYTES_PER_ELEMENT;
-    const numBytes = 14 * bytesPerElement;
-    const ptr = RealModule_2._malloc(numBytes);
-    
-    let heapView = new Int32Array(RealModule_2.HEAP32.buffer, ptr, 14);
-    heapView.set(status);
-    
-    const result = callOp2(flag, ptr);
-    return result;
-}
+import { mancalaBoard as board } from "./t3_1_cpp/bridge.js";
 
 let operator, status, operation, operationSequence, boardReturn, isEnded;
 let op1Result = 0, op2Result = 0;

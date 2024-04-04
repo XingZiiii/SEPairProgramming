@@ -4,14 +4,14 @@
 
 #define p1_score  6
 #define p2_score 13
-#define INF 9999999
+#define INF INT_MAX
 #define DEPTH 10
 
 
 using namespace std;
 
 extern "C" {
-    int isOver(vector<int> board) {
+    int isOver(vector<int>& board) {
         int flag = 1;
         for (int i = 0; i < 6; i++) {
             if (board[i] != 0) {
@@ -129,7 +129,7 @@ extern "C" {
         return res;
     }
 
-    double evaluate(int flag, std::vector<int>& board) {
+    int evaluate(int flag, std::vector<int>& board) {
         int sum1 = 0;
         for (int i=0; i<7; i++){
             sum1 += board[i];
@@ -163,7 +163,8 @@ extern "C" {
         }
     };
 
-    vector<int> mancalaMove(vector<int> board, int move){
+    vector<int> mancalaMove(const vector<int>& oldBoard, int move){
+        vector<int> board = oldBoard;
         int pre = board[14];
         int pos = move;
         if (pre == 2) {
@@ -208,25 +209,21 @@ extern "C" {
         return board;
     }
 
-    double minMax(int flag, std::vector<int> board, int depth, int alpha, int beta) {
+    int minMax(int flag, std::vector<int>& board, int depth, int alpha, int beta) {
         int begin = board[14]==1 ? 0:7;
         if (depth == 0 || board[14]==3) {
             return evaluate(flag, board);
         }
         if (flag == board[14]) {
             // 最大策略
-            double maxEval = -INF;
+            int maxEval = -INF;
             for (int i = begin; i < begin+6; i++) {
                 if (board[i] == 0) continue;
                 std::vector<int> newboard = mancalaMove(board, i-begin);
-                double eval = minMax(flag, newboard, depth-1, alpha, beta);
+                int eval = minMax(flag, newboard, depth-1, alpha, beta);
                 // cout << "maxeval: " << eval << endl;
-                if (eval > maxEval) {
-                    maxEval = eval;
-                }
-                if (eval > alpha) {
-                    alpha = eval;
-                }
+                maxEval = max(maxEval, eval);
+                alpha = max(alpha, eval);
                 if (beta <= alpha) {
                     break;
                 }
@@ -234,18 +231,14 @@ extern "C" {
             return maxEval;
         } else {
             // 最小策略
-            double minEval = INF;
+            int minEval = INF;
             for (int i = begin; i < begin + 6; i++) {
                 if (board[i] == 0) continue;
                 std::vector<int> newboard = mancalaMove(board, i-begin);
-                double eval = minMax(flag, newboard, depth-1, alpha, beta);
+                int eval = minMax(flag, newboard, depth-1, alpha, beta);
                 // cout << "mineval: " << eval << endl;
-                if (eval < minEval) {
-                    minEval = eval;
-                }
-                if (eval < beta) {
-                    beta = eval;
-                }
+                minEval = min(minEval, eval);
+                beta = min(beta, eval);
                 if (beta <= alpha) {
                     break;
                 }
@@ -256,12 +249,9 @@ extern "C" {
 
     int findBestMove(int flag, int *status) {
         int begin = flag==1 ? 0:7;
-        double maxEval = -INF;
+        int maxEval = -INF;
         int maxMove = -1;
-        std::vector<int> board;
-        for (int i = 0; i < 14; i++){
-            board.push_back(status[i]);
-        }
+        vector<int> board(status, status + 14);
         board.push_back(flag);
 
         for (int i = begin; i < begin + 6; i++) {
@@ -269,7 +259,7 @@ extern "C" {
 
             //走一步
             std::vector<int> newboard = mancalaMove(board, i-begin);
-            double eval = minMax(flag, newboard, DEPTH, -INF, INF);
+            int eval = minMax(flag, newboard, DEPTH, -INF, INF);
             // cout << "TEST: " << eval << endl;
             if (eval > maxEval) {
                 maxEval = eval;
@@ -286,29 +276,29 @@ extern "C" {
     
 }
 // test
-int main() {
-    int seq[100];
-    int op = 1, size = 0;
-    int *board;
-    board = new int[14]{4,4,4,4,4,4,0,4,4,4,4,4,4,0};
-    while (op < 3){
-        // int move;
-        // if (op == 1) {
-        //     cin >> move;
-        // } else {
-        //     move = mancalaOperator(op, board);
-        // }
+// int main() {
+//     int seq[100];
+//     int op = 1, size = 0;
+//     int *board;
+//     board = new int[14]{4,4,4,4,4,4,0,4,4,4,4,4,4,0};
+//     while (op < 3){
+//         int move;
+//         if (op == 1) {
+//             cin >> move;
+//         } else {
+//             move = mancalaOperator(op, board);
+//         }
 
-        int move = mancalaOperator(op, board);
-        seq[size++] = move;
-        board = mancalaBoard(op, seq, size);
-        op = board[14];
+//         // int move = mancalaOperator(op, board);
+//         seq[size++] = move;
+//         board = mancalaBoard(op, seq, size);
+//         op = board[14];
         
-        cout << move << endl;
-        for (int i = 0; i < 15; i++){
-            cout << board[i] << " ";
-        }
-        cout << endl;
-    }
-    cout << "score:" << op-200 << endl;
-}
+//         cout << move << endl;
+//         for (int i = 0; i < 15; i++){
+//             cout << board[i] << " ";
+//         }
+//         cout << endl;
+//     }
+//     cout << "score:" << op-200 << endl;
+// }
