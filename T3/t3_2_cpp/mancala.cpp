@@ -156,9 +156,9 @@ extern "C" {
                 return 0;
             } else if (flag == 1) {
 
-                return (sum1-sum2)*(1+polar*grid_empty * 1.0 / fabs(sum1-sum2));
+                return (sum1 - sum2 + grid_empty);
             } else {
-                return (sum2-sum1)*(1+polar*grid_empty * 1.0 / fabs(sum1-sum2));
+                return (sum2 - sum1 + grid_empty);
             }
         }
     };
