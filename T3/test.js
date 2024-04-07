@@ -8,7 +8,8 @@ import { mancalaOperator as op1 } from "./t3_2_cpp/bridge.js";
 // Choose proper "import" depending on your PL.
 // import { mancalaOperator as op2 } from "./t3-2-as-rival/build/release.js";
 // import { mancala_operator as op2 } from "./t3_2_rust_rival/pkg/t3_2_rust.js"
-import { mancalaOperator as op2 } from "./t3_2_xc/bridge.js";
+// import { mancalaOperator as op2 } from "./t3_2_lzh/release.js";
+import { mancalaOperator as op2 } from "./t3_2_rival/bridge.js";
 
 // Choose proper "import" depending on your PL.
 // import { mancalaBoard as board } from "./t3-1-as/build/release.js";
